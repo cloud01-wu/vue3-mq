@@ -5,6 +5,7 @@ import type {
   MqState,
   Breakpoint,
   BreakpointObject,
+  BreakpointQuery,
   Orientation,
   Theme,
   MotionPreference
@@ -22,20 +23,6 @@ const _defaultMotion = ref<MotionPreference>('no-preference')
 
 export class MqStateObject implements MqState {
   current: Breakpoint
-  xs: boolean
-  smMinus: boolean
-  smPlus: boolean
-  sm: boolean
-  mdMinus: boolean
-  mdPlus: boolean
-  md: boolean
-  lgMinus: boolean
-  lgPlus: boolean
-  lg: boolean
-  xlMinus: boolean
-  xlPlus: boolean
-  xl: boolean
-  xxl: boolean
   orientation: Orientation
   isLandscape: boolean
   isPortrait: boolean
@@ -45,23 +32,10 @@ export class MqStateObject implements MqState {
   motionPreference: MotionPreference
   isMotion: boolean
   isInert: boolean
+  queries: BreakpointQuery[]
 
   constructor() {
     this.current = ''
-    this.xs = false
-    this.smMinus = false
-    this.smPlus = false
-    this.sm = false
-    this.mdMinus = false
-    this.mdPlus = false
-    this.md = false
-    this.lgMinus = false
-    this.lgPlus = false
-    this.lg = false
-    this.xlMinus = false
-    this.xlPlus = false
-    this.xl = false
-    this.xxl = false
     this.orientation = _defaultOrientation.value
     this.isLandscape = true
     this.isPortrait = false
@@ -71,6 +45,12 @@ export class MqStateObject implements MqState {
     this.motionPreference = _defaultMotion.value
     this.isMotion = false
     this.isInert = false
+    this.queries = []
+  }
+  public is(key: string): boolean {
+    const query = this.queries.find((query) => query.key === key)
+    if (query) return query.value
+    return false
   }
 }
 const _mqState = ref<MqState>(new MqStateObject())
@@ -127,6 +107,15 @@ export const setDefaultMotion = (v: MotionPreference): void => {
   _defaultMotion.value = v
 }
 
+const insertOrUpdateQuery = (key: string, value: boolean): void => {
+  const query = _mqState.value.queries.find((query) => query.key === key)
+  if (query) {
+    query.value = value
+  } else {
+    _mqState.value.queries.push({ key, value })
+  }
+}
+
 export const updateState = (v: string = defaultBreakpoint.value): void => {
   _mqState.value.current = v
 
@@ -137,11 +126,12 @@ export const updateState = (v: string = defaultBreakpoint.value): void => {
       const mKey = `${allKeys[idx]}Minus`
       const pKey = `${allKeys[idx]}Plus`
 
-      _mqState.value[mKey] = currentIndex <= idx ? true : false
-      _mqState.value[pKey] = currentIndex >= idx ? true : false
+      insertOrUpdateQuery(mKey, currentIndex <= idx ? true : false)
+      insertOrUpdateQuery(pKey, currentIndex >= idx ? true : false)
     }
 
-    _mqState.value[allKeys[idx]] = allKeys[idx] === v ? true : false
+    // _mqState.value[allKeys[idx]] = allKeys[idx] === v ? true : false
+    insertOrUpdateQuery(allKeys[idx], allKeys[idx] === v ? true : false)
   }
 }
 
@@ -152,6 +142,7 @@ export const updateState = (v: string = defaultBreakpoint.value): void => {
 export const resetState = (): void => {
   // reset all properties of the target
   _mqState.value = Object.assign(_mqState.value, new MqStateObject())
+  _mqState.value.queries = []
 
   updateState()
   updateOrientationState()

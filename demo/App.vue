@@ -38,12 +38,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { availableBreakpoints, MqResponsive, updateBreakpoints, useMq } from 'vue3-mq'
 
-const mq = useMq()
-
-const $mq = computed(() => mq)
+const $mq = useMq()
 
 onMounted(() => {})
 

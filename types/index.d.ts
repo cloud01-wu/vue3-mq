@@ -8,22 +8,13 @@ export interface BreakpointObject {
   min: number
 }
 
+export interface BreakpointQuery {
+  key: string
+  value: boolean
+}
+
 export interface MqState {
   current: Breakpoint
-  xs: boolean
-  smMinus: boolean
-  smPlus: boolean
-  sm: boolean
-  mdMinus: boolean
-  mdPlus: boolean
-  md: boolean
-  lgMinus: boolean
-  lgPlus: boolean
-  lg: boolean
-  xlMinus: boolean
-  xlPlus: boolean
-  xl: boolean
-  xxl: boolean
   orientation: Orientation
   isLandscape: boolean
   isPortrait: boolean
@@ -33,4 +24,7 @@ export interface MqState {
   motionPreference: MotionPreference
   isMotion: boolean
   isInert: boolean
+  queries: BreakpointQuery[]
+
+  is(key: string): boolean
 }
