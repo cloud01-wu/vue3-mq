@@ -1,4 +1,4 @@
-Bring fully reactive, responsive design to your Vue 3 project with Vue3-MQ, a plugin which allows your components and pages to adapt to changes in the browser environment.
+Bring fully reactive, responsive design to your Vue 3 and typescript project with Vue3-MQ, a plugin which allows your components and pages to adapt to changes in the browser environment.
 
 -   Completely customisable breakpoints
 -   Includes MQ-Responsive Vue component for unparalleled ease of use
@@ -8,10 +8,6 @@ Bring fully reactive, responsive design to your Vue 3 project with Vue3-MQ, a pl
 -   Respect user preference for reduced motion direct in your Vue files
 -   Choose from a range of breakpoint presets, including Bootstrap 4, Bootstrap 5, Vuetify or Tailwind
 -   Render on single breakpoints, arrays of breakpoints or ranges
-
-## Documentation
-
-Check out the documentation at [Vue3 MQ: Github Pages](https://craigrileyuk.github.io/vue3-mq/).
 
 ## License
 
