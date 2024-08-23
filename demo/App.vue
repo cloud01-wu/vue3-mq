@@ -49,9 +49,9 @@
 </template>
 
 <script lang="ts" setup>
-import type { Breakpoint } from 'vue3-mq'
+import type { Breakpoint } from '@cloud01-wu/vue3-mq'
 import { onMounted } from 'vue'
-import { availableBreakpoints, MqResponsive, updateBreakpoints, useMq } from 'vue3-mq'
+import { availableBreakpoints, MqResponsive, updateBreakpoints, useMq } from '@cloud01-wu/vue3-mq'
 
 const $mq = useMq()
 

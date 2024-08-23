@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import { Vue3Mq } from 'vue3-mq'
+import { Vue3Mq } from '@cloud01-wu/vue3-mq'
 
 import App from './App.vue'
 import './main.css'
