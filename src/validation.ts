@@ -1,4 +1,4 @@
-import type { Orientation, Theme, MotionPreference, BreakpointObject } from 'types'
+import type { Breakpoint, Orientation, Theme, MotionPreference } from 'types'
 import * as presets from './presets'
 
 export const validatePreset = (preset) => {
@@ -48,31 +48,28 @@ export const validateMotion = (motion?: MotionPreference): MotionPreference | nu
   } else return motion
 }
 
-export const sanitiseBreakpoints = (breakpoints) => {
-  if (!breakpoints || typeof breakpoints !== 'object') return false
-  const sanitisedBreakpoints: BreakpointObject[] = []
+export const sanitiseBreakpoints = (breakpoints: Breakpoint[]) => {
+  if (!breakpoints || !Array.isArray(breakpoints)) return false
+  const sanitisedBreakpoints: Breakpoint[] = []
 
-  for (const key in breakpoints) {
-    const bp = parseFloat(breakpoints[key])
-    if (!key || typeof key !== 'string') {
-      console.warn(`Vue3 Mq: Invalid or missing breakpoint key (${JSON.stringify(key)}). Skipping.`)
+  for (const [idx, breakpoint] of breakpoints.entries()) {
+    const { name, min } = breakpoint
+    if (!name) {
+      console.warn(`Vue3 Mq: Invalid or missing breakpoint key at item index #${idx}. Skipping.`)
       continue
-    } else if (/^[^a-z]/i.test(key) || /[^a-zA-Z0-9_]/.test(key)) {
+    } else if (/^[^a-z]/i.test(name) || /[^a-zA-Z0-9_]/.test(name)) {
       console.warn(
-        `Vue3 Mq: "${key}" is an invalid breakpoint key. Breakpoint keys must start with a letter and contain only alphanumeric characters and underscores. Skipping.`
+        `Vue3 Mq: "${name}" is an invalid breakpoint key. Breakpoint keys must start with a letter and contain only alphanumeric characters and underscores. Skipping.`
       )
       continue
-    } else if ((!bp && bp !== 0) || isNaN(bp) || bp < 0) {
+    } else if ((!min && min !== 0) || isNaN(min) || min < 0) {
       console.warn(
-        `Vue3 Mq: "${key}: ${breakpoints[key]}" is not a valid breakpoint. Breakpoints should be a number of zero or above. Skipping.`
+        `Vue3 Mq: "${name}: ${min}" is not a valid breakpoint value. Breakpoints should be a number of zero or above. Skipping.`
       )
       continue
     }
 
-    sanitisedBreakpoints.push({
-      name: key,
-      min: bp
-    })
+    sanitisedBreakpoints.push(breakpoint)
   }
 
   const hasZero = sanitisedBreakpoints.some((breakpoint) => breakpoint.min === 0)

@@ -7,6 +7,7 @@ import {
   calculateMotionToRender
 } from './helpers'
 import { extractSlotNameProperties } from './validation'
+import { Breakpoint } from 'types'
 
 const defaultTransitionOptions = {
   name: 'fade',
@@ -86,7 +87,7 @@ export default {
   },
   setup(props, { attrs, slots }) {
     const breakpointsToRender = computed(() => {
-      return calculateBreakpointsToRender(props.target, availableBreakpoints)
+      return calculateBreakpointsToRender(props.target, availableBreakpoints.value as Breakpoint[])
     })
     const orientationsToRender = computed(() => {
       return calculateOrientationsToRender(props.landscape, props.portrait)
@@ -99,7 +100,8 @@ export default {
     })
     const shouldRenderDefault = computed(() => {
       return (
-        breakpointsToRender.value.includes(mqState.current) &&
+        breakpointsToRender.value.findIndex((breakpoint) => breakpoint === mqState.current) !==
+          -1 &&
         orientationsToRender.value.includes(mqState.orientation) &&
         themesToRender.value.includes(mqState.theme) &&
         motionToRender.value.includes(mqState.motionPreference)
@@ -115,7 +117,7 @@ export default {
         const { slotBp, slotOrientation, slotTheme, slotMotion } = extractSlotNameProperties(slot)
         // Compute an array of breakpoints in which the slot should render
         const breakpointsToRenderSlot = computed(() => {
-          return calculateBreakpointsToRender(slotBp, availableBreakpoints)
+          return calculateBreakpointsToRender(slotBp, availableBreakpoints.value as Breakpoint[])
         })
 
         // Compute an array of orientations on which the slot should render
@@ -139,7 +141,9 @@ export default {
         // Compute if this slot should be rendered
         const shouldRenderSlot = computed(() => {
           return (
-            breakpointsToRenderSlot.value.includes(mqState.current) &&
+            breakpointsToRenderSlot.value.findIndex(
+              (breakpoint) => breakpoint === mqState.current
+            ) !== -1 &&
             orientationsToRenderSlot.value.includes(mqState.orientation) &&
             themesToRenderSlot.value.includes(mqState.theme) &&
             motionToRenderSlot.value.includes(mqState.motionPreference)

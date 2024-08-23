@@ -1,3 +1,13 @@
+export type {
+  Breakpoint,
+  BreakpointKey,
+  BreakpointQuery,
+  MotionPreference,
+  MqState,
+  Orientation,
+  Theme
+} from 'types'
+
 export { default as MqResponsive } from './component'
 export { default as Vue3Mq } from './plugin'
 export { useMq, updateBreakpoints } from './composables'

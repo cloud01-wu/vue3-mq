@@ -1,20 +1,20 @@
+export type BreakpointKey = string
+export type MotionPreference = 'reduce' | 'no-preference'
 export type Orientation = 'landscape' | 'portrait'
 export type Theme = 'dark' | 'light'
-export type MotionPreference = 'reduce' | 'no-preference'
-export type Breakpoint = string
 
-export interface BreakpointObject {
-  name: string
+export interface Breakpoint {
+  name: BreakpointKey
   min: number
 }
 
 export interface BreakpointQuery {
-  key: string
+  key: BreakpointKey
   value: boolean
 }
 
 export interface MqState {
-  current: Breakpoint
+  current: BreakpointKey
   orientation: Orientation
   isLandscape: boolean
   isPortrait: boolean
@@ -26,5 +26,5 @@ export interface MqState {
   isInert: boolean
   queries: BreakpointQuery[]
 
-  is(key: string): boolean
+  is(key: BreakpointKey): boolean
 }

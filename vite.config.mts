@@ -9,7 +9,7 @@ export default {
       reactivityTransform: true
     }),
     dts({
-      include: ['src', 'types'],
+      include: ['src'],
       rollupTypes: true
     }),
     EslintPlugin({

@@ -6,7 +6,7 @@ import { inject } from 'vue'
 /* ******************************************
  * LOCAL IMPORTS
  ****************************************** */
-import type { Orientation, Theme, MotionPreference } from 'types'
+import type { Breakpoint, MotionPreference, Orientation, Theme } from 'types'
 import { validatePreset, sanitiseBreakpoints } from './validation'
 import { removeListeners, createMediaQueries, subscribeToMediaQuery } from './helpers'
 
@@ -32,7 +32,7 @@ import type { MqState } from 'types'
  * @param {object} config.breakpoints - An object of name:min values to set
  * @param {object} config.preset - A breakpoint preset to use
  */
-export function updateBreakpoints(breakpoints?: { [key: string]: number }, preset?: string) {
+export function updateBreakpoints(breakpoints?: Breakpoint[], preset?: string) {
   const validatedPreset = preset ? validatePreset(preset) : false
   const sanitisedBreakpoints = breakpoints ? sanitiseBreakpoints(breakpoints) : false
   if (validatedPreset === false && !sanitisedBreakpoints) {

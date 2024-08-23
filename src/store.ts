@@ -4,7 +4,7 @@
 import type {
   MqState,
   Breakpoint,
-  BreakpointObject,
+  BreakpointKey,
   BreakpointQuery,
   Orientation,
   Theme,
@@ -15,14 +15,14 @@ import { readonly, ref } from 'vue'
 /* ******************************************
  * STATE
  ****************************************** */
-const _availableBreakpoints = ref<BreakpointObject[]>([])
-const _defaultBreakpoint = ref<Breakpoint>('md')
+const _availableBreakpoints = ref<Breakpoint[]>([])
+const _defaultBreakpoint = ref<BreakpointKey>('md')
 const _defaultOrientation = ref<Orientation>('landscape')
 const _defaultTheme = ref<Theme>('light')
 const _defaultMotion = ref<MotionPreference>('no-preference')
 
 export class MqStateObject implements MqState {
-  current: Breakpoint
+  current: BreakpointKey
   orientation: Orientation
   isLandscape: boolean
   isPortrait: boolean
@@ -71,7 +71,7 @@ export const mqState = readonly<MqState>(_mqState.value)
 /* ******************************************
  * MUTATIONS
  ****************************************** */
-export const setAvailableBreakpoints = (v: BreakpointObject[]): void => {
+export const setAvailableBreakpoints = (v: Breakpoint[]): void => {
   _availableBreakpoints.value = v
 }
 
@@ -79,7 +79,7 @@ export const setAvailableBreakpoints = (v: BreakpointObject[]): void => {
  * @constant
  * @type {Function} - Sets the breakpoint to use when plugin executes in a non-browser context
  */
-export const setDefaultBreakpoint = (v: Breakpoint): void => {
+export const setDefaultBreakpoint = (v: BreakpointKey): void => {
   _defaultBreakpoint.value = v
 }
 
@@ -123,8 +123,8 @@ export const updateState = (v: string = defaultBreakpoint.value): void => {
   const allKeys = availableBreakpoints.value.map((bp) => bp.name)
   for (let idx = 0; idx < allKeys.length; idx++) {
     if (idx > 0 && idx < allKeys.length - 1) {
-      const mKey = `${allKeys[idx]}Minus`
-      const pKey = `${allKeys[idx]}Plus`
+      const mKey = `${allKeys[idx]}-`
+      const pKey = `${allKeys[idx]}+`
 
       insertOrUpdateQuery(mKey, currentIndex <= idx ? true : false)
       insertOrUpdateQuery(pKey, currentIndex >= idx ? true : false)

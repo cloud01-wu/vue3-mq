@@ -1,5 +1,4 @@
-import type { Ref } from 'vue'
-import type { Orientation, Theme, MotionPreference, Breakpoint, BreakpointObject } from 'types'
+import type { Orientation, Theme, MotionPreference, Breakpoint, BreakpointKey } from 'types'
 import { _listeners as listeners, availableBreakpoints, _isMounted as isMounted } from './store'
 
 /**
@@ -77,7 +76,7 @@ export const subscribeToMediaQuery = (mediaQuery: string, callback: Function): b
  * @param {string} bp - The breakpoint to validate
  * @returns {boolean} - The validity of the breakpoint
  */
-const validateBreakpoint = (bp: Breakpoint): boolean => {
+const validateBreakpoint = (bp: BreakpointKey): boolean => {
   return availableBreakpoints.value.some((available) => available.name === bp)
 }
 
@@ -87,37 +86,38 @@ const validateBreakpoint = (bp: Breakpoint): boolean => {
  * @param {ref} available - A Vue REF holding an array of objects denoting breakpoints registered with the plugin
  * @returns {string[]} - An array of breakpoint keys that should be rendered based on the current breakpoint
  */
-export const calculateBreakpointsToRender = (bp: string, available: Ref): Breakpoint[] => {
-  const allKeys = available.value.map((a: BreakpointObject) => a.name)
+export const calculateBreakpointsToRender = (
+  bp: string,
+  available: Breakpoint[]
+): BreakpointKey[] => {
+  const allKeys = available.map((a: Breakpoint) => a.name)
 
   // No setting
-  if (!bp) return allKeys
-  // Array of breakpoints
-  else if (Array.isArray(bp)) {
+  if (!bp) {
+    return allKeys
+  } else if (Array.isArray(bp)) {
+    // array of breakpoints
     return bp.filter((n) => validateBreakpoint(n))
-  }
-  // Breakpoint plus
-  else if (typeof bp === 'string' && /\w+\+$/.test(bp)) {
+  } else if (typeof bp === 'string' && /\w+\+$/.test(bp)) {
+    // breakpoint plus
     bp = bp.replace(/\+$/, '')
     if (validateBreakpoint(bp) === false) {
       console.error(`Vue3 Mq: ${bp} is not a valid breakpoint key. Invalid range.`)
       return allKeys
     }
-    const fromIndex = available.value.findIndex((n) => n.name === bp)
-    return available.value.slice(fromIndex).map((n) => n.name)
-  }
-  // Breakpoint minus
-  else if (typeof bp === 'string' && /\w+-$/.test(bp)) {
+    const fromIndex = available.findIndex((n) => n.name === bp)
+    return available.slice(fromIndex).map((n) => n.name)
+  } else if (typeof bp === 'string' && /\w+-$/.test(bp)) {
+    // breakpoint minus
     bp = bp.replace(/-$/, '')
     if (validateBreakpoint(bp) === false) {
       console.error(`Vue3 Mq: ${bp} is not a valid breakpoint key. Invalid range.`)
       return allKeys
     }
-    const toIndex = available.value.findIndex((n) => n.name === bp)
-    return available.value.slice(0, toIndex + 1).map((n) => n.name)
-  }
-  // Breakpoint range
-  else if (typeof bp === 'string' && /^\w+-\w+$/.test(bp)) {
+    const toIndex = available.findIndex((n) => n.name === bp)
+    return available.slice(0, toIndex + 1).map((n) => n.name)
+  } else if (typeof bp === 'string' && /^\w+-\w+$/.test(bp)) {
+    // breakpoint range
     const [fromKey, toKey] = bp.split('-')
     if (validateBreakpoint(fromKey) === false) {
       console.error(`Vue3 Mq: ${fromKey} is not a valid breakpoint key. Invalid range.`)
@@ -126,15 +126,16 @@ export const calculateBreakpointsToRender = (bp: string, available: Ref): Breakp
       console.error(`Vue3 Mq: ${toKey} is not a valid breakpoint key. Invalid range.`)
       return allKeys
     }
-    const fromIndex = available.value.findIndex((n) => n.name === fromKey)
-    const toIndex = available.value.findIndex((n) => n.name === toKey)
-    return available.value.slice(fromIndex, toIndex + 1).map((n) => n.name)
+    const fromIndex = available.findIndex((n) => n.name === fromKey)
+    const toIndex = available.findIndex((n) => n.name === toKey)
+    return available.slice(fromIndex, toIndex + 1).map((n) => n.name)
+  } else if (typeof bp === 'string' && validateBreakpoint(bp) === true) {
+    // single breakpoint
+    const breakpoint = available.find((breakpoint) => breakpoint.name === bp) as Breakpoint
+    return [breakpoint.name]
   }
-  // Single breakpoint
-  else if (typeof bp === 'string' && validateBreakpoint(bp) === true) {
-    return [bp]
-  }
-  // Fallback
+
+  // fallback
   else return allKeys
 }
 
